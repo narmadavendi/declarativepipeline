@@ -1,0 +1,22 @@
+pipeline {
+    agent any
+    stages {
+        stage ('vcs') {
+            steps {
+                git url: '',
+                branch: ''
+            }
+        }
+        stage ('package') {
+            steps {
+                sh 'mvn package'
+            }
+        }
+        stage ('post build') {
+            archiveArtifacts artifacts: 'target/*.jar',
+                             onlyIfSuccessful: true
+            junit testResults: '**/surefire-reports/TEST-*.xml'
+        }
+
+    }
+}
